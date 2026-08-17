@@ -83,6 +83,11 @@ async def inspect_pdf(
 
     try:
         content = await file.read()
+        if len(content) > 50 * 1024 * 1024:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="File size exceeds maximum allowed limit of 50MB."
+            )
         pdf_stream = io.BytesIO(content)
 
         with pikepdf.open(pdf_stream, password=password or "") as pdf:
@@ -152,6 +157,11 @@ async def unlock_pdf(
 
     try:
         content = await file.read()
+        if len(content) > 50 * 1024 * 1024:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="File size exceeds maximum allowed limit of 50MB."
+            )
         pdf_in = io.BytesIO(content)
         pdf_out = io.BytesIO()
 
